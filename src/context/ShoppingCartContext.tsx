@@ -2,9 +2,9 @@ import { ReactNode, createContext, useContext, useState } from "react";
 
 type ShoppingCartContext = {
   getItemQuantity: (id: number) => number;
-  increaseCartQuantity: (id: number) => number;
-  decreaseCartQuantity: (id: number) => number;
-  removeFromCart: (id: number) => number;
+  increaseCartQuantity: (id: number) => void;
+  decreaseCartQuantity: (id: number) => void;
+  removeFromCart: (id: number) => void;
 };
 
 type ShoppingCartProviderProps = {
@@ -23,7 +23,7 @@ export function useShoppingcart() {
 }
 
 export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
-  const { cartItems, setCartItems } = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const getItemQuantity = (id: number) => {
     return (
@@ -32,11 +32,12 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   };
 
   const increaseCartQuantity = (id: number) => {
-    setCartItems((cartItems: CartItem[]) => {
-      if (cartItems.find((item) => item.id === id) === null) {
-        return [...cartItems, { id, quantity: 1 }];
+    console.log(id);
+    setCartItems((currItems) => {
+      if (currItems.find((item) => item.id === id) == null) {
+        return [...currItems, { id, quantity: 1 }];
       } else {
-        return cartItems.map((item) => {
+        return currItems.map((item) => {
           if (item.id === id) {
             return { ...item, quantity: item.quantity + 1 };
           } else {
@@ -48,7 +49,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   };
 
   const decreaseCartQuantity = (id: number) => {
-    setCartItems((cartItems: CartItem[]) => {
+    setCartItems((cartItems) => {
       if (cartItems.find((item) => item.id === id)?.quantity === 1) {
         return cartItems.filter((item) => item.id !== id);
       } else {
@@ -64,7 +65,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   };
 
   const removeFromCart = (id: number) => {
-    setCartItems((currItems:CartItem[]) => {
+    setCartItems((currItems) => {
       return currItems.filter((item) => item.id !== id);
     });
   };
